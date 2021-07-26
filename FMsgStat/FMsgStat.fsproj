@@ -12,6 +12,7 @@
         <Compile Include="Charts\DailyMessagesChart.fs" />
         <Compile Include="Charts\TotalMessagesChart.fs" />
         <Compile Include="Program.fs" />
+        <Content Include="README.md" />
     </ItemGroup>
 
     <ItemGroup>
