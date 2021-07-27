@@ -46,14 +46,10 @@ let dailyMessagesChart
             (fun (g, m) ->
                 let axes = messageGroupsToAxes m
 
-                let x = Array.zeroCreate axes.Length
-                let y = Array.zeroCreate axes.Length
-
-                axes
-                |> Array.iteri
-                    (fun i el ->
-                        x.[i] <- el.X
-                        y.[i] <- el.Y)
+                let x, y =
+                    axes
+                    |> Array.map (fun el -> el.X, el.Y)
+                    |> Array.unzip
 
                 Bar(x = x, y = y, name = g))
 
