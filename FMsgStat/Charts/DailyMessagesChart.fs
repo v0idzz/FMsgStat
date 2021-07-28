@@ -2,55 +2,36 @@ module DailyMessagesChart
 
 open System
 
-open XPlot.Plotly
+open MessageFile
 
-type MessagesGroupKey =
-    { Year: int
-      Month: int
-      Day: int
-      Sender: string }
+open XPlot.Plotly
 
 let dailyMessagesChart
     ({ Messages = messages
        Participants = participants }: Conversation.T)
     =
 
-    let messagesByDateAndSender =
+    let date (m: Message) =
+        (m.TimestampMs |> DateTimeOffset.FromUnixTimeMilliseconds).Date.ToShortDateString()
+
+    let countsByDate (m: seq<Message>) =
+        m
+        |> Seq.groupBy date
+        |> Seq.map (fun (g, ms) -> g, ms |> Seq.length)
+
+    let messagesBySender =
         messages
-        |> Array.groupBy
-            (fun f ->
-                let dt =
-                    DateTimeOffset.FromUnixTimeMilliseconds f.TimestampMs
+        |> Seq.groupBy (fun m -> m.SenderName)
 
-                { Year = dt.Year
-                  Month = dt.Month
-                  Day = dt.Day
-                  Sender = f.SenderName })
-
-    let messageGroupsBySender =
-        messagesByDateAndSender
-        |> Array.groupBy (fun (g, _) -> g.Sender)
-
-    let messageGroupsToAxes (groups: (MessagesGroupKey * MessageFile.Message []) []) =
-        groups
-        |> Array.map
+    let data =
+        messagesBySender
+        |> Seq.map (fun (g, ms) -> g, countsByDate ms)
+    
+    let bars =
+        data
+        |> Seq.map
             (fun (g, m) ->
-                {| X =
-                       DateTime(g.Year, g.Month, g.Day)
-                           .ToShortDateString()
-                   Y = m.Length |})
-
-    let traces =
-        messageGroupsBySender
-        |> Array.map
-            (fun (g, m) ->
-                let axes = messageGroupsToAxes m
-
-                let x, y =
-                    axes
-                    |> Array.map (fun el -> el.X, el.Y)
-                    |> Array.unzip
-
+                let x, y = m |> Array.ofSeq |> Array.unzip
                 Bar(x = x, y = y, name = g))
 
     let title = participants |> String.concat ", "
@@ -58,7 +39,7 @@ let dailyMessagesChart
     let stackedLayout = Layout(barmode = "stack")
 
     let chart =
-        traces
+        bars
         |> Chart.Plot
         |> Chart.WithLayout stackedLayout
         |> Chart.WithHeight 800
