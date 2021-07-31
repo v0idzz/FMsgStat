@@ -7,18 +7,18 @@ open System.Text.RegularExpressions
 
 type Participant = { Name: string }
 
-type Message =
+type RawMessage =
     { SenderName: string
       TimestampMs: int64
       Content: string }
 
 type Contents =
     { Participants: Participant []
-      Messages: Message [] }
+      Messages: RawMessage [] }
 
 type T =
     { Participants: Participant []
-      Messages: Message [] }
+      Messages: RawMessage [] }
 
 let private snakeCaseNamingPolicyOptions =
     JsonSerializerOptions(

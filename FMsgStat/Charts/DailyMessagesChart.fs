@@ -1,9 +1,5 @@
 module DailyMessagesChart
 
-open System
-
-open MessageFile
-
 open XPlot.Plotly
 
 let dailyMessagesChart
@@ -11,10 +7,10 @@ let dailyMessagesChart
        Participants = participants }: Conversation.T)
     =
 
-    let date (m: Message) =
-        (m.TimestampMs |> DateTimeOffset.FromUnixTimeMilliseconds).Date.ToShortDateString()
+    let date (m: Conversation.Message) =
+        m.Timestamp.Date.ToShortDateString()
 
-    let countsByDate (m: seq<Message>) =
+    let countsByDate (m: seq<Conversation.Message>) =
         m
         |> Seq.groupBy date
         |> Seq.map (fun (g, ms) -> g, ms |> Seq.length)

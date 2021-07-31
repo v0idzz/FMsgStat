@@ -11,6 +11,7 @@
         <Compile Include="Conversation.fs" />
         <Compile Include="Charts\DailyMessagesChart.fs" />
         <Compile Include="Charts\TotalMessagesChart.fs" />
+        <Compile Include="Charts\AverageWeeklyMessagesChart.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 

@@ -2,7 +2,8 @@
 
 let chartsGenerators =
     [ "Daily", DailyMessagesChart.dailyMessagesChart
-      "Total", TotalMessagesChart.totalMessagesChart ]
+      "Total", TotalMessagesChart.totalMessagesChart
+      "Weekly", AverageWeeklyMessagesChart.averageWeeklyMessagesChart ]
 
 [<EntryPoint>]
 let main argv =
